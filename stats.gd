@@ -35,13 +35,23 @@ var _stats := {
 }
 
 # Initial an empty array to store upgrades
-var upgrades : Array = []
+var upgrades: Array = []
+
+func upgradepickup(upgrade: Upgrade):
+	# Apply the upgrade's modifiers to the player's stats
+	# Add the Upgrade object to the next array index
+	for stat in upgrade.modifiers.keys():
+		var mod = upgrade.modifiers[stat]
+		if mod["type"] == "flat":
+			add(stat, "flat", mod["value"])
+		elif mod["type"] == "mult":
+			add(stat, "mult", mod["value"])
+
 
 func _make_stat(base: float) -> Dictionary:
 	return {
 		"base": base,
-		"formulas": [],
-		"total": base
+		"formulas": []
 	}
 
 # Get the final calculated value of a stat
@@ -68,13 +78,17 @@ func setstat(statname: String, base_value: float) -> void:
 	else:
 		push_error("Stat not found: " + statname)
 
-# Add a formula string to a stat and recalculate the total also return the index of the formula 
+# Add a formula string to a stat and return its index (flat or mult)
 func add(statname: String, formula: String) -> int:
 	if !_stats.has(statname):
 		push_error("Stat not found: " + statname)
 		return -1
 
-	var list = _stats[statname]["formulas"]
+	var list = _stats[statname][formula]
+	for i in range(list.size()):
+		if list[i] == null:
+			list[i] = formula
+			return i
 	list.append(formula)
 	return list.size() - 1
 
