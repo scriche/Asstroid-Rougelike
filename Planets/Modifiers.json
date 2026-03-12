@@ -3,169 +3,202 @@
     {
       "name": "bonus_loot_chance",
       "value": 2,
-      "rarity": 2
+      "rarity": 2,
+      "type": "environment"
     },
     {
       "name": "magnetic_loot_boost",
       "value": 1,
-      "rarity": 5
+      "rarity": 5,
+      "type": "player"
     },
     {
       "name": "gold_astroid",
       "value": 3,
-      "rarity": 3
+      "rarity": 3,
+      "type": "environment"
     },
     {
       "name": "shop_discount",
       "value": 6,
-      "rarity": 1
+      "rarity": 1,
+      "type": "player"
     },
     {
       "name": "extra_shop_mod",
       "value": 3,
-      "rarity": 3
+      "rarity": 3,
+      "type": "player"
     },
     {
       "name": "free_shop_refresh",
       "value": 4,
-      "rarity": 5
+      "rarity": 5,
+      "type": "player"
     },
     {
       "name": "boost_random_stat",
       "value": 1,
-      "rarity": 4
+      "rarity": 4,
+      "type": "player"
     },
     {
       "name": "extra_life",
       "value": 4,
-      "rarity": 3
+      "rarity": 3,
+      "type": "player"
     },
     {
       "name": "slower_enemys",
       "value": 7,
-      "rarity": 3
+      "rarity": 3,
+      "type": "enemy"
     },
     {
       "name": "cargo_ship",
       "value": 2,
-      "rarity": 4
+      "rarity": 4,
+      "type": "event"
     },
     {
       "name": "pirate_ship",
       "value": 2,
-      "rarity": 4
+      "rarity": 4,
+      "type": "event"
     },
     {
       "name": "junker_ship",
       "value": 2,
-      "rarity": 4
+      "rarity": 4,
+      "type": "event"
     }
   ],
   "negative": [
     {
       "name": "enemy_damage",
       "value": -1,
-      "rarity": 3
+      "rarity": 3,
+      "type": "enemy"
     },
     {
       "name": "double_asteroid_waves",
       "value": -2,
-      "rarity": 6
+      "rarity": 6,
+      "type": "environment"
     },
     {
       "name": "enemy_ambush_event",
       "value": -3,
-      "rarity": 4
+      "rarity": 4,
+      "type": "event"
     },
     {
       "name": "navigation_scramble",
       "value": -1,
-      "rarity": 5
+      "rarity": 5,
+      "type": "player"
     },
     {
       "name": "burning_asteroids",
       "value": -2,
-      "rarity": 3
+      "rarity": 3,
+      "type": "environment"
     },
     {
       "name": "sensor_blackout",
       "value": -1,
-      "rarity": 7
+      "rarity": 7,
+      "type": "player"
     },
     {
       "name": "random_weapon_malfunction",
       "value": -2,
-      "rarity": 5
+      "rarity": 5,
+      "type": "player"
     },
     {
       "name": "magnetic_field_interference",
       "value": -1,
-      "rarity": 6
+      "rarity": 6,
+      "type": "environment"
     },
     {
       "name": "power_drain_zone",
       "value": -2,
-      "rarity": 4
+      "rarity": 4,
+      "type": "environment"
     },
     {
       "name": "slow_rotational_controls",
       "value": -1,
-      "rarity": 6
+      "rarity": 6,
+      "type": "player"
     },
     {
       "name": "enemy_speed_boost",
       "value": -3,
-      "rarity": 3
+      "rarity": 3,
+      "type": "enemy"
     },
     {
       "name": "fragile_shielding",
       "value": -2,
-      "rarity": 5
+      "rarity": 5,
+      "type": "player"
     },
     {
       "name": "increased_asteroid_density",
       "value": -2,
-      "rarity": 6
+      "rarity": 6,
+      "type": "environment"
     },
     {
       "name": "ship_hull_cracks",
       "value": -1,
-      "rarity": 5
+      "rarity": 5,
+      "type": "player"
     },
     {
       "name": "low_visibility_fog",
       "value": -1,
-      "rarity": 7
+      "rarity": 7,
+      "type": "environment"
     },
     {
       "name": "no_pickup_magnetism",
       "value": -2,
-      "rarity": 4
+      "rarity": 4,
+      "type": "player"
     },
     {
       "name": "unpredictable_thrusters",
       "value": -2,
-      "rarity": 3
+      "rarity": 3,
+      "type": "player"
     },
     {
       "name": "high_gravity_zone",
       "value": -3,
-      "rarity": 2
+      "rarity": 2,
+      "type": "environment"
     },
     {
       "name": "enemy_shielding_upgrade",
       "value": -2,
-      "rarity": 5
+      "rarity": 5,
+      "type": "enemy"
     },
     {
       "name": "frequent_system_overloads",
       "value": -3,
-      "rarity": 2
+      "rarity": 2,
+      "type": "player"
     },
     {
       "name": "no_powerups_spawn",
       "value": -3,
-      "rarity": 3
+      "rarity": 3,
+      "type": "environment"
     }
   ]
 }

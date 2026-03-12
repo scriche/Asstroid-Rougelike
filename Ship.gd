@@ -10,6 +10,7 @@ const ROTATION_SPEED = 100
 var viewportInfo : Rect2
 var velocity : Vector2 = Vector2.ZERO
 var health : int = 100
+var invincible : bool = false
 
 func _physics_process(delta: float) -> void:
 	# Update viewport info and player position
@@ -76,6 +77,10 @@ func damage(amount: int):
 	# Reduce health based on incoming damage and armor stat
 	health += amount - int(Stats.getstat("armor") / 2)
 
+	invincible = true
+	$Sprite2D.modulate = Color(1, 1, 1, 0.5)  # Make the ship semi-transparent
+	$Timer2.start()  # Start invincibility timer
+
 	if health <= 0:
 		Global.set("lives", Global.lives - 1)
 		queue_free()
@@ -89,3 +94,8 @@ func _on_area_2d_area_entered(area: Area2D):
 	elif area.is_in_group("Coin"):
 		Global.set("scrap", Global.scrap + 1)
 		area.get_parent().queue_free()
+
+
+func _on_timer_2_timeout():
+	invincible = false
+	$Sprite2D.modulate = Color(1, 1, 1, 1)  # Reset ship transparency

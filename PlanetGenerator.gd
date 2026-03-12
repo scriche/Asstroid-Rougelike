@@ -134,7 +134,8 @@ func getModifiers(positive_count: int, negative_count: int) -> Array:
 				"value": best_mod["mod"]["value"],
 				"impact": best_mod["impact"],
 				"rarity": best_mod["mod"]["rarity"],
-				"type": "positive"
+				"type": "positive",
+				"effect": best_mod["mod"]["type"]
 			})
 			total_impact += best_mod["impact"]
 		else:
@@ -164,7 +165,8 @@ func getModifiers(positive_count: int, negative_count: int) -> Array:
 				"value": mod["value"],
 				"impact": impact,
 				"rarity": mod["rarity"],
-				"type": "negative"
+				"type": "negative",
+				"effect": mod["type"]
 			})
 			total_impact += impact
 			print("Selected negative modifier:", mod["name"], "with impact:", impact)
@@ -183,7 +185,8 @@ func getModifiers(positive_count: int, negative_count: int) -> Array:
 					"value": mod["value"],
 					"impact": impact,
 					"rarity": mod["rarity"],
-					"type": "negative"
+					"type": "negative",
+					"effect": mod["type"]
 				})
 				total_impact += impact
 				break

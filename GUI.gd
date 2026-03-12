@@ -8,11 +8,13 @@ var planetboard
 var planetdisplay1
 var planetdisplay2
 var planetdisplay3
+var levelmanager : Node2D
 
 func _ready():
 	scrap = $GridContainer/Scrap
 	lives = $GridContainer/Lives
 	timer = $Time
+	levelmanager = get_node("/root/Main/World/LevelManager")
 	diffdisplay = $Diff
 	planetboard = $"Planet Board"
 	planetdisplay1 = $"Planet Board/Panel/HBoxContainer/MarginContainer"

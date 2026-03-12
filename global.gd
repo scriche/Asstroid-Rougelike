@@ -6,6 +6,9 @@ var diff : float = 1.0
 var viewpos : Vector2 = Vector2.ZERO
 var viewend : Vector2 = Vector2.ZERO
 var playerpos : Vector2 = Vector2.ZERO
+var planetA
+var planetB
+var planetC
 
 
 func _process(_delta):
