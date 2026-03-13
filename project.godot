@@ -22,6 +22,8 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 
 Global="*res://global.gd"
 Stats="*res://stats.gd"
+TriggerManager="*uid://d0rtd8p5e3crt"
+UpgradeDatabase="*uid://bduq1ghsp3ku6"
 
 [display]
 

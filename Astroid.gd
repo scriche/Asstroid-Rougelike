@@ -28,7 +28,6 @@ func break_apart() -> void:
 	c.position = position
 	get_parent().add_child(c)
 	if scale > Vector2(0.8, 0.8):
-		get_parent().duplicate()
 		var a = self.duplicate()
 		var b = self.duplicate()
 		a.scale = scale * 0.7

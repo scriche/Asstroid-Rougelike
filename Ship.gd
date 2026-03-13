@@ -9,7 +9,6 @@ const ROTATION_SPEED = 100
 # Internal state
 var viewportInfo : Rect2
 var velocity : Vector2 = Vector2.ZERO
-var health : int = 100
 var invincible : bool = false
 
 func _physics_process(delta: float) -> void:
@@ -19,7 +18,7 @@ func _physics_process(delta: float) -> void:
 
 	# Update UI (health bar)
 	$TextureProgressBar.max_value = Stats.getstat("max_health")
-	$TextureProgressBar.value = health
+	$TextureProgressBar.value = Stats.getstat("current_health")
 
 	# Update player scale based on stat
 	scale = Vector2(Stats.getstat("size"), Stats.getstat("size"))
@@ -51,6 +50,7 @@ func _physics_process(delta: float) -> void:
 	# Apply braking
 	if Input.is_action_pressed("shift"):
 		velocity *= 0.95
+		Stats.upgradepickup(UpgradeDatabase.get_upgrade_by_id(0)) # Temporary brake upgrade for testing
 
 	# --- Screen Wrapping ---
 
@@ -68,32 +68,36 @@ func _physics_process(delta: float) -> void:
 
 	# Clamp speed and apply velocity
 	var max_speed = Stats.getstat("max_speed")
-	var _maxspd = Vector2(max_speed, max_speed)
-	velocity = velocity.clamp(-_maxspd, _maxspd)
+	if velocity.length() > max_speed:
+		velocity = velocity.normalized() * max_speed
+	Stats.setstat("current_speed", velocity.length())
 	position += velocity
 
 # Damage handler
 func damage(amount: int):
 	# Reduce health based on incoming damage and armor stat
-	health += amount - int(Stats.getstat("armor") / 2)
-
+	Stats.setstat("current_health", Stats.getstat("current_health") + amount - int(Stats.getstat("armor") / 2))
 	invincible = true
 	$Sprite2D.modulate = Color(1, 1, 1, 0.5)  # Make the ship semi-transparent
 	$Timer2.start()  # Start invincibility timer
 
-	if health <= 0:
+	if Stats.getstat("current_health") <= 0:
 		Global.set("lives", Global.lives - 1)
 		queue_free()
 
 # Collision detection
 func _on_area_2d_area_entered(area: Area2D):
+
+	if area.is_in_group("Coin"):
+		Global.set("scrap", Global.scrap + 1)
+		area.get_parent().queue_free()
+
+	if invincible:
+		return
+
 	if area.is_in_group("Astroids"):
 		damage(-25)
 		area.call_deferred("damage", Stats.getstat("size") * 20)
-
-	elif area.is_in_group("Coin"):
-		Global.set("scrap", Global.scrap + 1)
-		area.get_parent().queue_free()
 
 
 func _on_timer_2_timeout():

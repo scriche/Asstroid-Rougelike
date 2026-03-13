@@ -11,5 +11,7 @@ func _on_timer_timeout() -> void:
 
 func _on_area_entered(area:Area2D):
 	if area.is_in_group("Astroids"):
+		# Send onhit signal to the signal manager
+		TriggerManager.on_bullet_hit(self, area)
 		area.call_deferred("damage", Stats.getstat("bullet_damage"))
 		queue_free()
