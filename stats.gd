@@ -7,7 +7,7 @@ var _stats := {
 	"health_regen_speed": _make_stat(1.0),
 	"current_speed": _make_stat(0.0),
 	"max_speed": _make_stat(10),
-	"turn_speed": _make_stat(180.0),
+	"turn_speed": _make_stat(100.0),
 	"acceleration": _make_stat(30.0),
 	"size": _make_stat(1.0),
 	"armor": _make_stat(0.0),

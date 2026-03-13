@@ -62,10 +62,6 @@ position = Vector2(0, -28)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ship" unique_id=1863661356]
 shape = SubResource("CircleShape2D_wkp8b")
 
-[node name="Timer" type="Timer" parent="World/Ship" unique_id=771683491]
-wait_time = 0.5
-one_shot = true
-
 [node name="Area2D" type="Area2D" parent="World/Ship" unique_id=1035862047 groups=["Player"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ship/Area2D" unique_id=1951406096]
@@ -82,8 +78,17 @@ value = 100.0
 texture_under = ExtResource("4_wkp8b")
 texture_progress = ExtResource("4_03owx")
 
-[node name="Timer2" type="Timer" parent="World/Ship" unique_id=2112330404]
+[node name="ShootTimer" type="Timer" parent="World/Ship" unique_id=771683491]
+wait_time = 0.5
 one_shot = true
+
+[node name="InvincibilityTimer" type="Timer" parent="World/Ship" unique_id=2112330404]
+one_shot = true
+
+[node name="HealthRegenTimer" type="Timer" parent="World/Ship" unique_id=1740249216]
+wait_time = 10.0
+
+[node name="ShieldRegenTimer" type="Timer" parent="World/Ship" unique_id=572534418]
 
 [node name="Camera2D" type="Camera2D" parent="World" unique_id=2109276930]
 position = Vector2(1280, 720)
@@ -337,7 +342,9 @@ size_flags_vertical = 8
 bbcode_enabled = true
 
 [connection signal="area_entered" from="World/Ship/Area2D" to="World/Ship" method="_on_area_2d_area_entered"]
-[connection signal="timeout" from="World/Ship/Timer2" to="World/Ship" method="_on_timer_2_timeout"]
+[connection signal="timeout" from="World/Ship/InvincibilityTimer" to="World/Ship" method="_on_timer_2_timeout"]
+[connection signal="timeout" from="World/Ship/HealthRegenTimer" to="World/Ship" method="_on_health_regen_timer_timeout"]
+[connection signal="timeout" from="World/Ship/ShieldRegenTimer" to="World/Ship" method="_on_shield_regen_timer_timeout"]
 [connection signal="planet_selection" from="World/LevelManager" to="Control" method="_on_level_manager_planet_selection"]
 [connection signal="timeout" from="World/LevelManager/Round Time" to="World/LevelManager" method="_on_round_time_timeout"]
 [connection signal="timeout" from="World/LevelManager/AstroidSpawner/Timer" to="World/LevelManager/AstroidSpawner" method="_on_timer_timeout"]

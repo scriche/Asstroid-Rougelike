@@ -8,5 +8,6 @@ class_name Upgrade
 @export_multiline var description: String
 @export var icon: Texture2D
 @export var modifiers: Dictionary 
+@export var trigger: String
 @export var trigger_ability: Callable
 @export var persistent_ability: Callable
