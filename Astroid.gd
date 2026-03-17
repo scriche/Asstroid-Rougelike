@@ -1,13 +1,14 @@
 extends Area2D
 
-var offset : Vector2 = Vector2(70, 70)
+var offset : Vector2 = Vector2(80*scale.x, 80*scale.x)
 var health = 10
+var is_dead = false
 @export var Coin : PackedScene
 
 func _ready() -> void:
 	health = 5 * Global.diff * scale.x
 	var middlevec =  (Global.viewend+Global.viewpos)/2 - position
-	var randscale = randf_range(0.5*Global.diff*scale.x,1*Global.diff*scale.x)
+	var randscale = randf_range(0.5*Global.diff*scale.x,0.7*Global.diff*scale.x)
 	if rotation == 0:
 		rotation += atan2(middlevec.y,middlevec.x)
 		rotation += randf_range(-PI/3,PI/3)
@@ -19,9 +20,17 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 
 func damage(amount: int) -> void:
+	if is_dead: 
+		return
+	TriggerManager.on_damage_dealt(self, damage)
 	health -= amount
 	if health <= 0:
+		is_dead = true
 		break_apart()
+
+func apply_stun(time):
+	for x in range(time):
+		print("stunned")
 
 func break_apart() -> void:
 	var c = Coin.instantiate()

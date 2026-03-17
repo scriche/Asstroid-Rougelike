@@ -12,21 +12,15 @@
 [ext_resource type="Script" uid="uid://ujyxxutqjdue" path="res://GUI.gd" id="6_3dxm6"]
 [ext_resource type="FontFile" uid="uid://c3ev5l0ayg3g8" path="res://Font/PixelatedEleganceRegular-ovyAA.ttf" id="6_03owx"]
 [ext_resource type="Script" uid="uid://dgpht0hwh7c0v" path="res://LevelManager.gd" id="8_c6i3y"]
-[ext_resource type="Script" uid="uid://bun4egitv7e3x" path="res://PlanetGenerator.gd" id="11_c2ibq"]
+[ext_resource type="Texture2D" uid="uid://buecwg8y28g8c" path="res://Sprites/ShieldBar.png" id="8_h1m7h"]
 [ext_resource type="Texture2D" uid="uid://dr2o1p734151d" path="res://Sprites/Coin.png" id="12_5vvyt"]
+[ext_resource type="Texture2D" uid="uid://dfatpsjjwkvb3" path="res://Sprites/wormhole.png" id="15_h1m7h"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wkp8b"]
 radius = 25.0799
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_20pc6"]
 radius = 25.02
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1p5hy"]
-bg_color = Color(0.151276, 0.151276, 0.151276, 1)
-border_width_left = 120
-border_width_right = 120
-border_color = Color(0.194349, 0.194349, 0.194349, 1)
-corner_detail = 20
 
 [node name="Main" type="Node2D" unique_id=255443077]
 
@@ -46,7 +40,7 @@ position = Vector2(2560, -1440)
 texture = ExtResource("1_wkp8b")
 
 [node name="Ship" type="RigidBody2D" parent="World" unique_id=1147848777]
-position = Vector2(1280, 720)
+position = Vector2(1282, 720)
 gravity_scale = 0.0
 script = ExtResource("1_fos0i")
 Bullet = ExtResource("2_cm0pq")
@@ -67,7 +61,7 @@ shape = SubResource("CircleShape2D_wkp8b")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ship/Area2D" unique_id=1951406096]
 shape = SubResource("CircleShape2D_20pc6")
 
-[node name="TextureProgressBar" type="TextureProgressBar" parent="World/Ship" unique_id=888661457]
+[node name="HealthBar" type="TextureProgressBar" parent="World/Ship" unique_id=888661457]
 texture_filter = 1
 offset_left = -32.0
 offset_top = 35.0
@@ -77,6 +71,18 @@ scale = Vector2(3.99977, 2.14092)
 value = 100.0
 texture_under = ExtResource("4_wkp8b")
 texture_progress = ExtResource("4_03owx")
+
+[node name="ShieldBar" type="TextureProgressBar" parent="World/Ship" unique_id=1827780311]
+visible = false
+texture_filter = 1
+offset_left = -32.0
+offset_top = 44.0
+offset_right = -16.0
+offset_bottom = 48.0
+scale = Vector2(3.99977, 2.14092)
+value = 100.0
+texture_under = ExtResource("4_wkp8b")
+texture_progress = ExtResource("8_h1m7h")
 
 [node name="ShootTimer" type="Timer" parent="World/Ship" unique_id=771683491]
 wait_time = 0.5
@@ -96,14 +102,15 @@ position = Vector2(1280, 720)
 [node name="LevelManager" type="Node2D" parent="World" unique_id=1327894041]
 script = ExtResource("8_c6i3y")
 
-[node name="PlanetGenerator" type="Node2D" parent="World/LevelManager" unique_id=1197023746]
-script = ExtResource("11_c2ibq")
+[node name="RoundTime" type="Timer" parent="World/LevelManager" unique_id=517059375]
+wait_time = 300.0
+one_shot = true
+autostart = true
 
-[node name="Round Time" type="Timer" parent="World/LevelManager" unique_id=517059375]
-wait_time = 10.0
+[node name="TickTimer" type="Timer" parent="World/LevelManager" unique_id=986322302]
+wait_time = 2.0
 
 [node name="AstroidSpawner" type="Node2D" parent="World/LevelManager" unique_id=1559825506]
-scale = Vector2(1.00222, 1)
 script = ExtResource("4_cm0pq")
 Astroid = ExtResource("5_fos0i")
 
@@ -127,24 +134,29 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("6_3dxm6")
 
-[node name="GridContainer" type="GridContainer" parent="Control" unique_id=1504394587]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control" unique_id=1337146527]
 layout_mode = 1
-offset_right = 106.0
-offset_bottom = 114.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 142.66838
+grow_horizontal = 2
+
+[node name="GridContainer" type="GridContainer" parent="Control/HBoxContainer" unique_id=1504394587]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
 columns = 2
 
-[node name="Money" type="TextureRect" parent="Control/GridContainer" unique_id=1311512505]
+[node name="Money" type="TextureRect" parent="Control/HBoxContainer/GridContainer" unique_id=1311512505]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 texture = ExtResource("12_5vvyt")
+expand_mode = 3
 
-[node name="Scrap" type="RichTextLabel" parent="Control/GridContainer" unique_id=1047506301]
+[node name="Scrap" type="RichTextLabel" parent="Control/HBoxContainer/GridContainer" unique_id=1047506301]
 texture_filter = 1
 custom_minimum_size = Vector2(50, 55)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_vertical = 3
 theme_override_fonts/normal_font = ExtResource("6_03owx")
 theme_override_font_sizes/normal_font_size = 60
 theme_override_font_sizes/bold_font_size = 20
@@ -154,57 +166,30 @@ theme_override_font_sizes/mono_font_size = 20
 bbcode_enabled = true
 text = "0"
 
-[node name="PlayerIcon" type="TextureRect" parent="Control/GridContainer" unique_id=1426792541]
+[node name="PlayerIcon" type="TextureRect" parent="Control/HBoxContainer/GridContainer" unique_id=1426792541]
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("3_fos0i")
+expand_mode = 3
+
+[node name="Lives" type="RichTextLabel" parent="Control/HBoxContainer/GridContainer" unique_id=191960677]
+texture_filter = 1
+custom_minimum_size = Vector2(50, 55)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/normal_font = ExtResource("6_03owx")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 20
+theme_override_font_sizes/bold_italics_font_size = 20
+theme_override_font_sizes/italics_font_size = 20
+theme_override_font_sizes/mono_font_size = 20
+bbcode_enabled = true
+text = "0"
+
+[node name="Diff" type="RichTextLabel" parent="Control/HBoxContainer" unique_id=1196532527]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-texture = ExtResource("3_fos0i")
-
-[node name="Lives" type="RichTextLabel" parent="Control/GridContainer" unique_id=191960677]
-texture_filter = 1
-custom_minimum_size = Vector2(50, 55)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_fonts/normal_font = ExtResource("6_03owx")
-theme_override_font_sizes/normal_font_size = 60
-theme_override_font_sizes/bold_font_size = 20
-theme_override_font_sizes/bold_italics_font_size = 20
-theme_override_font_sizes/italics_font_size = 20
-theme_override_font_sizes/mono_font_size = 20
-bbcode_enabled = true
-text = "0"
-
-[node name="Time" type="RichTextLabel" parent="Control" unique_id=1623105352]
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -357.0
-offset_bottom = 73.0
-grow_horizontal = 0
-theme_override_fonts/normal_font = ExtResource("6_03owx")
-theme_override_font_sizes/normal_font_size = 60
-theme_override_font_sizes/bold_font_size = 20
-theme_override_font_sizes/bold_italics_font_size = 20
-theme_override_font_sizes/italics_font_size = 20
-theme_override_font_sizes/mono_font_size = 20
-bbcode_enabled = true
-text = "00:00:00"
-horizontal_alignment = 2
-
-[node name="Diff" type="RichTextLabel" parent="Control" unique_id=1196532527]
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -178.503
-offset_right = 178.503
-offset_bottom = 73.0
-grow_horizontal = 2
 theme_override_fonts/normal_font = ExtResource("6_03owx")
 theme_override_font_sizes/normal_font_size = 60
 theme_override_font_sizes/bold_font_size = 20
@@ -215,139 +200,49 @@ bbcode_enabled = true
 text = "Diff"
 horizontal_alignment = 1
 
-[node name="Planet Board" type="MarginContainer" parent="Control" unique_id=1322211330]
-process_mode = 2
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 350
-theme_override_constants/margin_top = 220
-theme_override_constants/margin_right = 350
-theme_override_constants/margin_bottom = 220
-
-[node name="Panel" type="Panel" parent="Control/Planet Board" unique_id=2067072399]
-custom_minimum_size = Vector2(500, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1p5hy")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/Planet Board/Panel" unique_id=1531104958]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -656.5
-offset_top = -328.0
-offset_right = 656.5
-offset_bottom = 328.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/Planet Board/Panel/HBoxContainer" unique_id=1376518074]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/HBoxContainer" unique_id=1003887797]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
 
-[node name="ColorRect" type="ColorRect" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer" unique_id=403331198]
-layout_mode = 2
-size_flags_horizontal = 3
-color = Color(0.202394, 0.327841, 0.150892, 1)
-
-[node name="Name" type="RichTextLabel" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer" unique_id=62476200]
-custom_minimum_size = Vector2(0, 101.605)
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_font_sizes/normal_font_size = 51
-text = "test"
-
-[node name="Image" type="TextureRect" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer" unique_id=77747078]
+[node name="RoundCompletion" type="RichTextLabel" parent="Control/HBoxContainer/HBoxContainer" unique_id=1277730557]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 219.835)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/normal_font = ExtResource("6_03owx")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 20
+theme_override_font_sizes/bold_italics_font_size = 20
+theme_override_font_sizes/italics_font_size = 20
+theme_override_font_sizes/mono_font_size = 20
+bbcode_enabled = true
+text = "0%"
+horizontal_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="Control/HBoxContainer/HBoxContainer" unique_id=1541588315]
+texture_filter = 1
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_vertical = 0
-stretch_mode = 5
+texture = ExtResource("15_h1m7h")
+expand_mode = 3
 
-[node name="Modifiers" type="RichTextLabel" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer" unique_id=506013791]
-custom_minimum_size = Vector2(0, 303.78)
-layout_mode = 2
-size_flags_vertical = 8
-bbcode_enabled = true
-
-[node name="MarginContainer2" type="MarginContainer" parent="Control/Planet Board/Panel/HBoxContainer" unique_id=352523802]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
-
-[node name="ColorRect" type="ColorRect" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer2" unique_id=492425039]
-layout_mode = 2
-size_flags_horizontal = 3
-color = Color(0.202394, 0.327841, 0.150892, 1)
-
-[node name="Name" type="RichTextLabel" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer2" unique_id=334503228]
-custom_minimum_size = Vector2(0, 101.605)
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_font_sizes/normal_font_size = 51
-text = "test"
-
-[node name="Image" type="TextureRect" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer2" unique_id=1671835081]
+[node name="Time" type="RichTextLabel" parent="Control/HBoxContainer" unique_id=1623105352]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 219.835)
-layout_mode = 2
-size_flags_vertical = 0
-stretch_mode = 5
-
-[node name="Modifiers" type="RichTextLabel" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer2" unique_id=1882464292]
-custom_minimum_size = Vector2(0, 303.78)
-layout_mode = 2
-size_flags_vertical = 8
-bbcode_enabled = true
-
-[node name="MarginContainer3" type="MarginContainer" parent="Control/Planet Board/Panel/HBoxContainer" unique_id=804991217]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_right = 5
-
-[node name="ColorRect" type="ColorRect" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer3" unique_id=606260316]
-layout_mode = 2
-size_flags_horizontal = 3
-color = Color(0.202394, 0.327841, 0.150892, 1)
-
-[node name="Name" type="RichTextLabel" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer3" unique_id=1267949024]
-custom_minimum_size = Vector2(0, 101.605)
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_font_sizes/normal_font_size = 51
-text = "test"
-
-[node name="Image" type="TextureRect" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer3" unique_id=2108596766]
-texture_filter = 1
-custom_minimum_size = Vector2(0, 219.835)
-layout_mode = 2
-size_flags_vertical = 0
-stretch_mode = 5
-
-[node name="Modifiers" type="RichTextLabel" parent="Control/Planet Board/Panel/HBoxContainer/MarginContainer3" unique_id=879070120]
-custom_minimum_size = Vector2(0, 303.78)
-layout_mode = 2
-size_flags_vertical = 8
+theme_override_fonts/normal_font = ExtResource("6_03owx")
+theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/bold_font_size = 20
+theme_override_font_sizes/bold_italics_font_size = 20
+theme_override_font_sizes/italics_font_size = 20
+theme_override_font_sizes/mono_font_size = 20
 bbcode_enabled = true
+text = "00:00:00"
+horizontal_alignment = 2
 
 [connection signal="area_entered" from="World/Ship/Area2D" to="World/Ship" method="_on_area_2d_area_entered"]
 [connection signal="timeout" from="World/Ship/InvincibilityTimer" to="World/Ship" method="_on_timer_2_timeout"]
 [connection signal="timeout" from="World/Ship/HealthRegenTimer" to="World/Ship" method="_on_health_regen_timer_timeout"]
 [connection signal="timeout" from="World/Ship/ShieldRegenTimer" to="World/Ship" method="_on_shield_regen_timer_timeout"]
-[connection signal="planet_selection" from="World/LevelManager" to="Control" method="_on_level_manager_planet_selection"]
-[connection signal="timeout" from="World/LevelManager/Round Time" to="World/LevelManager" method="_on_round_time_timeout"]
+[connection signal="timeout" from="World/LevelManager/RoundTime" to="World/LevelManager" method="_on_round_time_timeout"]
 [connection signal="timeout" from="World/LevelManager/AstroidSpawner/Timer" to="World/LevelManager/AstroidSpawner" method="_on_timer_timeout"]
-[connection signal="gui_input" from="Control/Planet Board/Panel/HBoxContainer/MarginContainer" to="World/LevelManager" method="_on_margin_container_gui_input"]
-[connection signal="gui_input" from="Control/Planet Board/Panel/HBoxContainer/MarginContainer2" to="World/LevelManager" method="_on_margin_container_2_gui_input"]
-[connection signal="gui_input" from="Control/Planet Board/Panel/HBoxContainer/MarginContainer3" to="World/LevelManager" method="_on_margin_container_3_gui_input"]

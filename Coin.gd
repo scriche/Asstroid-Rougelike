@@ -2,6 +2,9 @@ extends Area2D
 
 var magnet: bool = false
 
+func _ready():
+    $CollisionShape2D.shape.radius *= Stats.getstat("pickup_range")
+
 func _physics_process(delta):
     if magnet:
             var direction = (Global.playerpos - position).normalized()

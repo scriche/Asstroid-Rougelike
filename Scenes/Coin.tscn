@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4jluid2pp5qw"]
+[gd_scene format=3 uid="uid://d4jluid2pp5qw"]
 
 [ext_resource type="Script" uid="uid://cs3syaq2leoow" path="res://Coin.gd" id="1_somhs"]
 [ext_resource type="Texture2D" uid="uid://dr2o1p734151d" path="res://Sprites/Coin.png" id="2_wjfxq"]
@@ -9,19 +9,21 @@ radius = 133.015
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ou7jl"]
 size = Vector2(3.32513, 3.32513)
 
-[node name="Coin" type="Area2D"]
+[node name="Coin" type="Area2D" unique_id=1793763157]
+collision_layer = 0
 script = ExtResource("1_somhs")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=281145764]
 scale = Vector2(2, 2)
 texture = ExtResource("2_wjfxq")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=220579364]
 shape = SubResource("CircleShape2D_h5dih")
 
-[node name="Area2D" type="Area2D" parent="." groups=["Coin"]]
+[node name="Area2D" type="Area2D" parent="." unique_id=240247280 groups=["Coin"]]
+collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=57935711]
 scale = Vector2(3.60888, 3.60888)
 shape = SubResource("RectangleShape2D_ou7jl")
 

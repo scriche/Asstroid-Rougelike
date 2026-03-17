@@ -7,21 +7,24 @@ func _ready():
 
 func load_upgrades_from_folder(path: String):
 	var dir = DirAccess.open(path)
-	
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		
 		while file_name != "":
-			# Skip directories and only grab .tres files
-			if !dir.current_is_dir() and file_name.ends_with(".tres"):
+			if !dir.current_is_dir() and file_name.ends_with(".gd"):
 				var full_path = path + file_name
-				var upgrade_resource = ResourceLoader.load(full_path)
-				
-				if upgrade_resource is Upgrade:
-					# Avoid duplicates if calling this multiple times
-					if not all_upgrades.has(upgrade_resource):
-						all_upgrades.append(upgrade_resource)
+				var script_resource = load(full_path) # Load the script file
+
+				# 1. Check if the script exists and can be instanced
+				if script_resource is GDScript:
+					var upgrade_instance = script_resource.new() # Create the actual object
+					
+					# 2. Now 'is Upgrade' will work because it's an object, not a script!
+					if upgrade_instance is Upgrade:
+						# Optional: Use the filename or a property as a unique key
+						all_upgrades.append(upgrade_instance)
+						print("Loaded upgrade: ", upgrade_instance.name)
 			
 			file_name = dir.get_next()
 		dir.list_dir_end()

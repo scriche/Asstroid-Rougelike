@@ -14,49 +14,37 @@ var _stats := {
 	"armor_efficiency": _make_stat(0.75),
 	"shield": _make_stat(0.0),
 	"shield_regen_rate": _make_stat(1.0),
-	"dodge_chance": _make_stat(0.0),
+	"max_shield": _make_stat(0.0),
 	"i_frames": _make_stat(1),
 	"contact_damage": _make_stat(0.0),
 
 	"ability_recharge": _make_stat(1.0),
 	"ability_potency": _make_stat(1.0),
-	"ability_strength": _make_stat(10.0),
-	"upgrade_slots": _make_stat(3),
-	"upgrade_order": _make_stat(0),
-	"pickup_range": _make_stat(2.0),
-	"exp_multi": _make_stat(1.0),
+	"ability_strength": _make_stat(1.0),
+	"pickup_range": _make_stat(1.0),
 	"luck": _make_stat(1.0),
 	"greed": _make_stat(1.0),
 
 	"bullet_damage": _make_stat(10.0),
-	"bullet_fire_rate": _make_stat(2.0),
+	"bullet_fire_rate": _make_stat(0.5),
 	"bullet_speed": _make_stat(1000.0),
 	"bullet_size": _make_stat(1.0),
-	"bullet_duration": _make_stat(3.0),
 	"bullet_count": _make_stat(1),
-	"spread": _make_stat(5.0),
 	"bullet_pierce": _make_stat(0),
-	"bullet_reflect_count": _make_stat(0),
 	"bullet_homing": _make_stat(0.0),
-	"bullet_crit_percent": _make_stat(0.05),
-	"bullet_crit_mult": _make_stat(2.0),
+	"bullet_crit_chance": _make_stat(0.0),
+	"bullet_crit_mult": _make_stat(1.5),
 	"bullet_potency": _make_stat(0.0),
 	"bullet_strength": _make_stat(1.0),
-	"recoil": _make_stat(0.1),
 }
 
-func _process(_delta):
-	# interate through all persistant abilities and call them
-	for ability in persistant_abilities:
-		ability.call()
-
-
 # Initial an empty array to store upgrades
-var upgrades: Array = []
-var persistant_abilities: Array = []
+var upgrades: Array[Upgrade] = []
 
 func upgradepickup(upgrade: Upgrade):
 	# Add the upgrade to the player's list of upgrades
+	upgrade = upgrade.duplicate()
+	upgrade.instance_id = upgrade.get_instance_id()
 	upgrades.append(upgrade)
 
 	# Apply the upgrade's modifiers to the player's stats
@@ -66,14 +54,8 @@ func upgradepickup(upgrade: Upgrade):
 			push_error("Stat not found: " + stat_name)
 			return -1
 
-		_stats[stat_name]["modifiers"][upgrade.id] = formula
+		_stats[stat_name]["modifiers"][upgrade.instance_id] = formula
 		_stats[stat_name]["dirty"] = true
-
-	# Check if the upgrade has an ability and set it up
-	if upgrade.persistent_ability.is_valid():
-		# Add the upgrades persistant ability to the to the respective array
-		persistant_abilities.append(upgrade.persistent_ability)
-		return
 
 func removeupgrade(upgrade: Upgrade):
 	# Remove the upgrade from the player's list of upgrades
@@ -82,11 +64,6 @@ func removeupgrade(upgrade: Upgrade):
 	# Remove the upgrade's modifiers from the player's stats
 	for stat_name in upgrade.modifiers.keys():
 		_stats[stat_name]["formulas"].erase(upgrade.modifiers[stat_name])
-
-	# Remove the upgrade's ability if it has one
-	if upgrade.persistant_ability != null:
-		persistant_abilities.erase(upgrade.persistant_ability)
-
 
 func _make_stat(base: float) -> Dictionary:
 	return {
