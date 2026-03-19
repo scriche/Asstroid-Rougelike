@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bucx25pxal460"]
+
+[ext_resource type="Texture2D" uid="uid://dbq6jqmoqcwos" path="res://Upgrades/StatUpgrades/Plating.png" id="1_h7t3d"]
+
+[node name="UpgradeSlot" type="VBoxContainer" unique_id=1700872270]
+size_flags_vertical = 3
+
+[node name="UpgradeIcon" type="TextureRect" parent="." unique_id=1132253505]
+texture_filter = 2
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+texture = ExtResource("1_h7t3d")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="UpgradeName" type="RichTextLabel" parent="." unique_id=2067718126]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5

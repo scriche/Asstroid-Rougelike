@@ -3,31 +3,29 @@ extends Node
 var _stats := {
 	"current_health": _make_stat(100),
 	"max_health": _make_stat(100),
-	"health_regen_amount": _make_stat(0.0),
-	"health_regen_speed": _make_stat(1.0),
+	"health_regen_speed": _make_stat(5.0),
 	"current_speed": _make_stat(0.0),
 	"max_speed": _make_stat(10),
 	"turn_speed": _make_stat(100.0),
 	"acceleration": _make_stat(30.0),
-	"size": _make_stat(1.0),
 	"armor": _make_stat(0.0),
 	"armor_efficiency": _make_stat(0.75),
 	"shield": _make_stat(0.0),
 	"shield_regen_rate": _make_stat(1.0),
 	"max_shield": _make_stat(0.0),
 	"i_frames": _make_stat(1),
-	"contact_damage": _make_stat(0.0),
+	"contact_damage": _make_stat(20.0),
 
 	"ability_recharge": _make_stat(1.0),
 	"ability_potency": _make_stat(1.0),
 	"ability_strength": _make_stat(1.0),
 	"pickup_range": _make_stat(1.0),
 	"luck": _make_stat(1.0),
-	"greed": _make_stat(1.0),
+	"greed": _make_stat(0.0),
 
 	"bullet_damage": _make_stat(10.0),
 	"bullet_fire_rate": _make_stat(0.5),
-	"bullet_speed": _make_stat(1000.0),
+	"bullet_speed": _make_stat(1500.0),
 	"bullet_size": _make_stat(1.0),
 	"bullet_count": _make_stat(1),
 	"bullet_pierce": _make_stat(0),
@@ -63,7 +61,7 @@ func removeupgrade(upgrade: Upgrade):
 
 	# Remove the upgrade's modifiers from the player's stats
 	for stat_name in upgrade.modifiers.keys():
-		_stats[stat_name]["formulas"].erase(upgrade.modifiers[stat_name])
+		_stats[stat_name]["modifiers"].erase(upgrade.instance_id)
 
 func _make_stat(base: float) -> Dictionary:
 	return {
@@ -85,9 +83,11 @@ func getstat(statname: String) -> float:
 			if modifier == null:
 				continue
 			var formula = stat["modifiers"][modifier]
-			# perform the code in the formula on the value eg formula is exp(sqrt(value*4)) then do that to the value
+			# replace value with the current value and replace base with the original base for any formulas that need it
+			formula = formula.replace("value", str(value))
+			formula = formula.replace("base", str(stat["base"]))
 			var expr = Expression.new()
-			expr.parse(formula.replace("value", str(value)))
+			expr.parse(formula)
 			value = expr.execute()
 		stat["total"] = value
 		stat["dirty"] = false

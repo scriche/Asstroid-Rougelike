@@ -21,3 +21,9 @@ func _on_timer_timeout() -> void:
 
 func _process(_delta: float) -> void:
 	$Timer.wait_time = 2/Global.diff * spawnspeed
+
+func toggle_spawning():
+	if $Timer.is_stopped():
+		$Timer.start()
+	else:
+		$Timer.stop()

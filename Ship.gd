@@ -26,12 +26,28 @@ func _physics_process(delta: float) -> void:
 		if upgrade.passive == true:
 			upgrade.passive_effect(self)
 
-	# Update player scale based on stat
-	scale = Vector2(Stats.getstat("size"), Stats.getstat("size"))
-
 	# --- Player Controls ---
 
 	# testing rotate towards cursor
+	# 1. Get the direction to the mouse
+	var mouse_pos = get_global_mouse_position()
+	var to_mouse = mouse_pos - global_position
+	
+	# 2. Find the "Target Angle" (where we WANT to look)
+	var target_angle = to_mouse.angle()+PI/2 # Add 90 degrees because your sprite faces up, but angle 0 is to the right
+	
+	# 3. Calculate the difference (shortest path to that angle)
+	var angle_diff = wrapf(target_angle - rotation, -PI, PI)
+	
+	# 4. Apply your rotation logic
+	# We use the 'turn_speed' stat just like your original code
+	var turn_amount = (PI / 50) * Stats.getstat("turn_speed") * delta
+	
+	# Only rotate if we aren't already pointing almost exactly at the mouse
+	if abs(angle_diff) > 0.05:
+		# sign(angle_diff) tells us to go positive or negative (Clockwise or Counter)
+		# min(abs(angle_diff), turn_amount) prevents "jittering" past the target
+		rotation += sign(angle_diff) * min(abs(angle_diff), turn_amount)
 
 	# Rotate left
 	if Input.is_action_pressed("a"):
@@ -55,18 +71,12 @@ func _physics_process(delta: float) -> void:
 				var b = Bullet.instantiate()
 				owner.add_child(b)
 				
-				# Trigger unique upgrade logic for EACH bullet
 				TriggerManager.on_bullet_fired(b)
-				
-				# Start with the player's current facing direction
 				var base_transform = barrel_marker.global_transform
 				
 				# Calculate the offset for this specific bullet
 				var angle_offset = 0
 				if bullet_count > 1:
-					# This formula centers the spread perfectly
-					# (i / (total - 1)) gives a 0.0 to 1.0 range
-					# Subtracting 0.5 centers it to -0.5 to 0.5
 					angle_offset = (float(i) / (bullet_count - 1) - 0.5) * spread_angle
 				
 				# Apply the transform and the rotation offset
@@ -87,7 +97,6 @@ func _physics_process(delta: float) -> void:
 	# Apply braking
 	if Input.is_action_pressed("shift"):
 		velocity *= 0.95
-		Stats.upgradepickup(UpgradeDatabase.get_upgrade_by_id(0)) # Temporary brake upgrade for testing
 
 	# --- Screen Wrapping ---
 
@@ -142,15 +151,19 @@ func damage(amount: int, area: Area2D):
 func _on_area_2d_area_entered(area: Area2D):
 
 	if area.is_in_group("Coin"):
-		Global.set("scrap", Global.scrap + 1 * Stats.getstat("greed"))
+		Global.set("scrap", Global.scrap + 1)
 		area.get_parent().queue_free()
+
+	if area.is_in_group("exp"):
+		Global.set("experience", Global.experience + 1)
+		area.queue_free()
 
 	if invincible:
 		return
 
-	if area.is_in_group("Astroids"):
-		damage(-10, area)
-		area.call_deferred("damage", Stats.getstat("size") * Stats.getstat("contact_damage"))
+	if area.is_in_group("enemies"):
+		damage(-area.damage_amount, area)
+		area.call_deferred("damage", Stats.getstat("contact_damage"))
 
 
 func _on_timer_2_timeout():
@@ -172,15 +185,13 @@ func _on_health_regen_timer_timeout() -> void:
 	# Regenerate health based on health regen stats
 	health_regen_timer.wait_time = Stats.getstat("health_regen_speed")
 	if Stats.getstat("current_health") < Stats.getstat("max_health"):
-		Stats.setstat("current_health", Stats.getstat("current_health") + Stats.getstat("health_regen_amount"))
+		Stats.setstat("current_health", Stats.getstat("current_health") + 1)
 		update_heathbar()
-		
-
 
 func _on_shield_regen_timer_timeout() -> void:
-	if Stats.getstat("shield") > 0:
+	if Stats.getstat("max_shield") > 0:
 		shieldbar.visible = true
 	shield_regen_timer.wait_time = Stats.getstat("shield_regen_rate")
 	if Stats.getstat("shield") < Stats.getstat("max_shield"):
-		Stats.setstat("shield", Stats.getstat("shield") + Stats.getstat("shield_regen_amount"))
+		Stats.setstat("shield", Stats.getstat("shield") + 1)
 		shieldbar.value = Stats.getstat("shield")

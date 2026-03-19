@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://r13sojguw3k0"]
+
+[ext_resource type="Script" uid="uid://bwjp1he0xvgq8" path="res://Events/golden_astroid.gd" id="1_ytwl4"]
+[ext_resource type="Texture2D" uid="uid://c48d1c5k7glpp" path="res://Sprites/Astroid.png" id="2_01nrg"]
+[ext_resource type="PackedScene" uid="uid://d4jluid2pp5qw" path="res://Scenes/Coin.tscn" id="2_nxmad"]
+
+[node name="GoldenAstroid" type="Area2D" unique_id=1335272999 groups=["enemies"]]
+collision_layer = 5
+script = ExtResource("1_ytwl4")
+Coin = ExtResource("2_nxmad")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=421647140]
+modulate = Color(1, 1, 0, 1)
+texture_filter = 1
+texture = ExtResource("2_01nrg")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1449459995]
+polygon = PackedVector2Array(-9, -29, -31, -6, -24, 26, 9, 31, 31, 11, 21, -31)

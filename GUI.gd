@@ -7,6 +7,8 @@ var diffdisplay: RichTextLabel
 var rounddisplay: RichTextLabel
 var levelmanager : Node2D
 var timer: RichTextLabel
+var expdisplay: TextureProgressBar
+var bosshealthbar: TextureProgressBar
 
 func _ready():
 	scrap = $HBoxContainer/GridContainer/Scrap
@@ -14,7 +16,9 @@ func _ready():
 	diffdisplay = $HBoxContainer/Diff
 	rounddisplay = $HBoxContainer/HBoxContainer/RoundCompletion
 	timer = $HBoxContainer/Time
+	bosshealthbar = $BossHealthbar
 	levelmanager = get_node("/root/Main/World/LevelManager")
+	expdisplay = $ExpBar
 	roundtime = levelmanager.get_child(0)
 
 func _process(_delta):
@@ -25,3 +29,10 @@ func _process(_delta):
 	timer.text = time_string
 	diffdisplay.text = "%.2f" % Global.diff
 	rounddisplay.text = str(int((1 - (roundtime.time_left / roundtime.wait_time)) * 100))+"%"
+	expdisplay.value = Global.experience
+	bosshealthbar.value = Global.boss_health
+	if expdisplay.value >= expdisplay.max_value:
+		Global.experience = 0
+		expdisplay.max_value *= 1.2
+		$Upgradepopup.show()
+		$Upgradepopup.popup()

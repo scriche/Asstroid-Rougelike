@@ -6,6 +6,7 @@ extends Area2D
 var pierce_count = 0
 var target: Node2D = null
 var search_timer: float = randf_range(0.0,0.2)
+var is_destroyed: bool = false
 
 func _physics_process(delta: float) -> void:
 	# 1. Target Refresh (Staggered for performance)
@@ -52,7 +53,9 @@ func _on_timer_timeout() -> void:
 	queue_free()
 
 func _on_area_entered(area:Area2D):
-	if area.is_in_group("Astroids"):
+	if is_destroyed:
+		return
+	if area.is_in_group("enemies"):
 		# Send onhit signal to the signal manager
 		TriggerManager.on_bullet_hit(self, area)
 		var crit_chance = Stats.getstat("bullet_crit_chance")
@@ -66,5 +69,6 @@ func _on_area_entered(area:Area2D):
 			bullet_damage *= crit_mult
 		area.call_deferred("damage", bullet_damage)
 		if pierce_count >= Stats.getstat("bullet_pierce"):
+			is_destroyed = true
 			queue_free()
 		pierce_count+=1

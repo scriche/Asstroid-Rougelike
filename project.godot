@@ -38,6 +38,7 @@ project/assembly_name="asstroids"
 [global_group]
 
 enemies=""
+exp=""
 
 [input]
 

@@ -4,6 +4,7 @@ extends Node
 
 func _ready():
 	load_upgrades_from_folder("res://Upgrades/")
+	load_upgrades_from_folder("res://Upgrades/StatUpgrades/")
 
 func load_upgrades_from_folder(path: String):
 	var dir = DirAccess.open(path)
@@ -22,6 +23,7 @@ func load_upgrades_from_folder(path: String):
 					
 					# 2. Now 'is Upgrade' will work because it's an object, not a script!
 					if upgrade_instance is Upgrade:
+						upgrade_instance.id = all_upgrades.size() # Assign a unique ID based on current list size
 						# Optional: Use the filename or a property as a unique key
 						all_upgrades.append(upgrade_instance)
 						print("Loaded upgrade: ", upgrade_instance.name)
@@ -31,10 +33,10 @@ func load_upgrades_from_folder(path: String):
 	else:
 		print("An error occurred when trying to access the path: ", path)
 
-## Helper to find an upgrade by ID
-func get_upgrade_by_id(target_id: int) -> Upgrade:
+## Helper to find an upgrade by name
+func get_upgrade_by_name(upgrade_name: String) -> Upgrade:
 	for upgrade in all_upgrades:
-		if upgrade.id == target_id:
+		if upgrade.name == upgrade_name:
 			return upgrade
 	return null
 

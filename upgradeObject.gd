@@ -12,8 +12,8 @@ class_name Upgrade
 @export var trigger: String
 @export var passive: bool = false
 
-func passive_effect(player):
+func passive_effect(_player):
     pass
 
-func trigger_effect(params: Dictionary = {}):
+func trigger_effect(_params: Dictionary = {}):
     pass

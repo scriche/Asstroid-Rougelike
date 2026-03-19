@@ -10,6 +10,7 @@ radius = 133.015
 size = Vector2(3.32513, 3.32513)
 
 [node name="Coin" type="Area2D" unique_id=1793763157]
+show_behind_parent = true
 collision_layer = 0
 script = ExtResource("1_somhs")
 

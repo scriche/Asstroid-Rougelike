@@ -7,4 +7,3 @@ func _init():
 	rarity = 2 # Rare
 	price = 250
 	description = "Dealing damage has a 20% chance to stun the enemy."
-	modifiers = {"bullet_crit_chance": "value+0.1"}

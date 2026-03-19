@@ -1,44 +1,71 @@
 extends Node2D
 
-@onready var roundtimer : Timer = $"Round Time"
-@onready var spawntimer: Timer = $TickTimer
+@onready var roundtimer : Timer = $RoundTime
+@onready var spawntimer: Timer = $SpawnTimer
+@onready var astroidspawner: Node2D = $AstroidSpawner
+var credits: int = 100
 
-
-func _on_round_time_timeout():
-	pass
 
 func startRound():
 	# Start the round timer
 	roundtimer.start()
-	spawntimer.start()
+	spawntimer.start(randi_range(30, 60)) # Randomize spawn timer for more dynamic gameplay
 
+func spawn_enemy(type: Global.Enemy, spawn_pos: Vector2):
+	var data = Global.enemies.get(type)
+	if data and _purchase(data.cost):
+		var enemy = data.scene.instantiate()
+		enemy.global_position = spawn_pos
+		add_child(enemy)
+		return enemy
+
+func spawn_event(type: Global.Event):
+	var data = Global.events.get(type)
+	if data and _purchase(data.cost):
+		var event = data.scene.instantiate()
+		add_child(event)
+		return event
+
+# Private helper to handle the money logic
+func _purchase(amount: int) -> bool:
+	if credits >= amount:
+		credits -= amount
+		print("Purchase successful. Remaining: ", credits)
+		return true
+	print("Insufficient funds! Need: ", amount)
+	return false
 
 func _on_tick_timer_timeout():
-	spawn_weighted_random()
 	update_spawn_speed()
+	if randf() < 0.7: # 70% chance to spawn an enemy, 30% chance to trigger an event
+		spawn_enemy(Global.Enemy.CIRCLE_PASSIVE, _get_random_spawn_position())
+	else:
+		spawn_event(Global.Event.GOLDEN_ASTEROID)
 
-func spawn_weighted_random():
-	var table = get_dynamic_spawn_table()
-	var total_weight = 0.0
-	for weight in table.values():
-		total_weight += weight
-	
-	var roll = randf_range(0, total_weight)
-	var cursor = 0.0
-	
-	for path in table:
-		cursor += table[path]
-		if roll <= cursor:
-			instance_node(path)
-			return # Exit after spawning one thing
+func _on_round_time_timeout():
+	# Round ended, stop spawning and maybe trigger an event or reward
+	spawntimer.stop()
+	astroidspawner.toggle_spawning() # Example: toggle asteroid spawning on round end
+	spawn_enemy(Global.Enemy.HENNIGMACHINE, _get_random_spawn_position()) # Spawn a final enemy as a "boss" or challenge
 
-func get_dynamic_spawn_table() -> Dictionary:
-	return {
-		#"res://scenes/asteroid.tscn": 80.0, # Constant "noise"
-		#"res://scenes/enemy.tscn": 5.0 * difficulty, # Becomes common fast
-		#"res://scenes/mini_event.tscn": max(0, (difficulty - 2) * 3), # Mid-game
-		#"res://scenes/mega_event.tscn": max(0, (difficulty - 4) * 5)  # Late-game chaos
-	}
+func _get_random_spawn_position() -> Vector2:
+	var side = randi() % 4
+	var x: float
+	var y: float
+	match side:
+		0: # Top
+			x = randf_range(Global.viewpos.x, Global.viewend.x)
+			y = Global.viewpos.y - 50
+		1: # Right
+			x = Global.viewend.x + 50
+			y = randf_range(Global.viewpos.y, Global.viewend.y)
+		2: # Bottom
+			x = randf_range(Global.viewpos.x, Global.viewend.x)
+			y = Global.viewend.y + 50
+		3: # Left
+			x = Global.viewpos.x - 50
+			y = randf_range(Global.viewpos.y, Global.viewend.y)
+	return Vector2(x, y)
 
 func instance_node(path: String):
 	var scene = load(path).instantiate()

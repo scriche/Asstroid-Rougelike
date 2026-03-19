@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bx8hfn5u8hkua"]
+
+[ext_resource type="PackedScene" uid="uid://dwj61rkngj4mv" path="res://Enemies/Enemy.tscn" id="1_mamix"]
+[ext_resource type="Script" uid="uid://ccnk7nbmou8m0" path="res://Enemies/simple_circle.gd" id="2_2gq4a"]
+
+[node name="simple_circle" unique_id=1587836830 instance=ExtResource("1_mamix")]
+script = ExtResource("2_2gq4a")
