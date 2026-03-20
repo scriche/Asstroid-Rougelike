@@ -8,7 +8,7 @@ var coincount: int = 1
 var expcount: int = 2
 var speedmult: float = 1.0
 var is_fragment: bool = false
-var damage_amount: int = 10
+var damage_amount: int = 25
 
 func _ready() -> void:
 	if not is_fragment:

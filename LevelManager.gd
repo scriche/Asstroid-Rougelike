@@ -3,21 +3,23 @@ extends Node2D
 @onready var roundtimer : Timer = $RoundTime
 @onready var spawntimer: Timer = $SpawnTimer
 @onready var astroidspawner: Node2D = $AstroidSpawner
-var credits: int = 100
-
+var round_multi: int = 3
+var round_credits: int = 3
 
 func startRound():
 	# Start the round timer
 	roundtimer.start()
 	spawntimer.start(randi_range(30, 60)) # Randomize spawn timer for more dynamic gameplay
+	round_credits = Global.diff * round_multi
 
-func spawn_enemy(type: Global.Enemy, spawn_pos: Vector2):
+func spawn_enemy(type: Global.Enemy, spawn_pos: Vector2) -> Area2D:
 	var data = Global.enemies.get(type)
 	if data and _purchase(data.cost):
 		var enemy = data.scene.instantiate()
 		enemy.global_position = spawn_pos
 		add_child(enemy)
 		return enemy
+	return
 
 func spawn_event(type: Global.Event):
 	var data = Global.events.get(type)
@@ -28,9 +30,9 @@ func spawn_event(type: Global.Event):
 
 # Private helper to handle the money logic
 func _purchase(amount: int) -> bool:
-	if credits >= amount:
-		credits -= amount
-		print("Purchase successful. Remaining: ", credits)
+	if round_credits >= amount:
+		round_credits -= amount
+		print("Purchase successful. Remaining: ", round_credits)
 		return true
 	print("Insufficient funds! Need: ", amount)
 	return false
@@ -46,7 +48,7 @@ func _on_round_time_timeout():
 	# Round ended, stop spawning and maybe trigger an event or reward
 	spawntimer.stop()
 	astroidspawner.toggle_spawning() # Example: toggle asteroid spawning on round end
-	spawn_enemy(Global.Enemy.HENNIGMACHINE, _get_random_spawn_position()) # Spawn a final enemy as a "boss" or challenge
+	Global.boss = spawn_enemy(Global.Enemy.HENNIGMACHINE, Vector2(Global.viewend.x/2,Global.viewend.y/2)) # Spawn a final enemy as a "boss" or challenge
 
 func _get_random_spawn_position() -> Vector2:
 	var side = randi() % 4
@@ -74,4 +76,4 @@ func instance_node(path: String):
 
 func update_spawn_speed():
 	# This makes the "Tick" happen faster and faster
-	spawntimer.wait_time = clamp(2.0 / (Global.diff * 0.5), 0.15, 2.0)
+	spawntimer.wait_time = randf_range(25.0,70.0)

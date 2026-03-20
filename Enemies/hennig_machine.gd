@@ -3,6 +3,7 @@ extends Area2D
 @export var bullet_scene: PackedScene
 @export var bullet_count: int = 5
 @export var rotation_speed: float = 0.3 # How fast the "firing point" spins
+@export var max_health: int = 100
 @export var health: int = 100
 @export var speedmult: float = 300.0
 @export var target_threshold: float = 100.0

@@ -13,7 +13,6 @@
 [ext_resource type="FontFile" uid="uid://c3ev5l0ayg3g8" path="res://Font/PixelatedEleganceRegular-ovyAA.ttf" id="6_03owx"]
 [ext_resource type="Script" uid="uid://dgpht0hwh7c0v" path="res://LevelManager.gd" id="8_c6i3y"]
 [ext_resource type="Texture2D" uid="uid://buecwg8y28g8c" path="res://Sprites/ShieldBar.png" id="8_h1m7h"]
-[ext_resource type="PackedScene" uid="uid://bfsyi6irmloyl" path="res://Enemies/hennig_machine.tscn" id="12_0sclb"]
 [ext_resource type="Texture2D" uid="uid://dr2o1p734151d" path="res://Sprites/Coin.png" id="12_5vvyt"]
 [ext_resource type="Texture2D" uid="uid://dfatpsjjwkvb3" path="res://Sprites/wormhole.png" id="15_h1m7h"]
 [ext_resource type="Texture2D" uid="uid://b41t3nos5jbbw" path="res://Sprites/xpbargrey.png" id="16_2w5on"]
@@ -125,9 +124,6 @@ Astroid = ExtResource("5_fos0i")
 [node name="Timer" type="Timer" parent="World/LevelManager/AstroidSpawner" unique_id=1593646572]
 wait_time = 2.0
 autostart = true
-
-[node name="hennig_machine" parent="World/LevelManager" unique_id=1587836830 instance=ExtResource("12_0sclb")]
-position = Vector2(1283, 555)
 
 [node name="Control" type="Control" parent="." unique_id=50713865]
 layout_mode = 3
@@ -291,13 +287,13 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 
 [node name="BossHealthbar" type="TextureProgressBar" parent="Control" unique_id=797178068]
+visible = false
 custom_minimum_size = Vector2(1000, 90)
 layout_mode = 0
 offset_left = 537.5
 offset_top = 976.7921
 offset_right = 1537.5
 offset_bottom = 1066.7921
-value = 65.0
 nine_patch_stretch = true
 texture_under = ExtResource("20_sxkr1")
 texture_progress = ExtResource("4_wkp8b")

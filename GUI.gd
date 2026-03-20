@@ -30,7 +30,14 @@ func _process(_delta):
 	diffdisplay.text = "%.2f" % Global.diff
 	rounddisplay.text = str(int((1 - (roundtime.time_left / roundtime.wait_time)) * 100))+"%"
 	expdisplay.value = Global.experience
-	bosshealthbar.value = Global.boss_health
+	if Global.boss:
+		bosshealthbar.visible = true
+		bosshealthbar.value = Global.boss.health
+		bosshealthbar.max_value = Global.boss.max_health
+	else:
+		Global.boss = null	
+		bosshealthbar.visible = false
+		
 	if expdisplay.value >= expdisplay.max_value:
 		Global.experience = 0
 		expdisplay.max_value *= 1.2

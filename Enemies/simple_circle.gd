@@ -10,7 +10,7 @@ extends Area2D
 
 var fire_timer: float = 0.0
 var current_offset: float = 0.0
-var damage_amount: int = 10
+var damage_amount: int = 20
 var current_target_pos: Vector2 = Vector2.ZERO
 var is_dead: bool = false
 var coincount: int = 5

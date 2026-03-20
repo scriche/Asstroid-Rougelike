@@ -2,6 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://dwj61rkngj4mv" path="res://Enemies/Enemy.tscn" id="1_mamix"]
 [ext_resource type="Script" uid="uid://ccnk7nbmou8m0" path="res://Enemies/simple_circle.gd" id="2_2gq4a"]
+[ext_resource type="PackedScene" uid="uid://dx1c0sb1fhwa7" path="res://Scenes/EnemyBullet.tscn" id="3_kkioj"]
 
 [node name="simple_circle" unique_id=1587836830 instance=ExtResource("1_mamix")]
 script = ExtResource("2_2gq4a")
+bullet_scene = ExtResource("3_kkioj")
