@@ -23,7 +23,7 @@ func load_upgrades_from_folder(path: String):
 					# 2. Now 'is Upgrade' will work because it's an object, not a script!
 					if upgrade_instance is Upgrade:
 						# set to a uid that is about 5 uuid
-						upgrade_instance.id = int(Time.get_unix_time_from_system()) * 1000 # Unique ID based on timestamp
+						upgrade_instance.id = all_upgrades.size() - 1
 						all_upgrades.append(upgrade_instance)
 						print("Loaded upgrade: ", upgrade_instance.name)
 			

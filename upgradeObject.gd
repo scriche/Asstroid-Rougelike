@@ -29,22 +29,22 @@ var current_grid_pos: Vector2i = Vector2i(-1, -1)
 # --- Functions ---
 
 func passive_effect(_player):
-    if passive:
-        pass
+	if passive:
+		pass
 
 func trigger_effect(_params: Dictionary = {}):
-    # You can call this from the Grid Manager when the 'trigger' string matches
-    pass
+	# You can call this from the Grid Manager when the 'trigger' string matches
+	pass
 
 ## Helper to get all absolute coordinates of this item based on a position
 func get_occupied_coords(origin: Vector2i) -> Array[Vector2i]:
-    var points: Array[Vector2i] = []
-    for offset in shape:
-        points.append(origin + offset)
-    return points
+	var points: Array[Vector2i] = []
+	for offset in shape:
+		points.append(origin + offset)
+	return points
 
 func rotate():
-    # Rotate the shape 90 degrees clockwise around the origin (0,0)
-    for i in range(shape.size()):
-        var offset = shape[i]
-        shape[i] = Vector2i(-offset.y, offset.x) # (x,y) -> (-y,x)
+	# Rotate the shape 90 degrees clockwise around the origin (0,0)
+	for i in range(shape.size()):
+		var offset = shape[i]
+		shape[i] = Vector2i(-offset.y, offset.x) # (x,y) -> (-y,x)
