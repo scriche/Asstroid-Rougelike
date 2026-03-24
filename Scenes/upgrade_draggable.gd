@@ -59,6 +59,7 @@ func _gui_input(event):
 func spawn_clone():
 	# We use duplicate() to get an exact copy of this node's properties
 	var clone = self.duplicate()
+	clone.upgrade.instance_id = int(Time.get_unix_time_from_system()) * 1000 # Assign a new unique instance_id based on timestamp
 	
 	# Configure the clone to be a "real" draggable item
 	clone.is_infinite = false
@@ -80,6 +81,7 @@ func check_drop_zone():
 			if slot.get_global_rect().has_point(mouse_pos):
 				print("SUCCESS: Dropped on slot: ", slot.name)
 				# Snap to slot position and rotation
+				Stats.upgrade_grid.place_upgrade(upgrade, slot.get_meta("grid_pos")) # Place the upgrade on the grid using its position metadata
 				global_position = slot.global_position
 				# Add the upgrade to the slot
 				slot.get_parent().add_child(self) # Reparent to the slot's parent (e.g., the grid)

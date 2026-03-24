@@ -76,6 +76,7 @@ func place_upgrade(upgrade: Upgrade, pos: Vector2i) -> bool:
 	# 2. Clear old position if this is a move/rotate
 	if placed_upgrades.has(upgrade.instance_id):
 		_clear_tiles(upgrade.instance_id)
+		print("Upgrade was already placed, clearing old position.")
 	print("Upgrade can be placed, proceeding with placement.")
 	# 3. Place the upgrade by marking its occupied tiles with its unique instance_id
 	for offset in upgrade.shape:
