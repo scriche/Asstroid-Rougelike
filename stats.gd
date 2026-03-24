@@ -36,6 +36,10 @@ var _stats := {
 	"bullet_strength": _make_stat(1.0),
 }
 
+# Initialize the upgrade grid of the ship with 0 means locked, 1 means available
+# 9x9 grid with all 0s except for a cross shape in the middle where the first 5 rows and columns are available for upgrades, and the rest are locked. This is just an example layout and can be changed as needed.
+var upgrade_grid : UpgradeGrid = UpgradeGrid.new()
+
 # Initial an empty array to store upgrades
 var upgrades: Array[Upgrade] = []
 

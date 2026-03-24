@@ -12,21 +12,23 @@ func startRound():
 	spawntimer.start(randi_range(30, 60)) # Randomize spawn timer for more dynamic gameplay
 	round_credits = Global.diff * round_multi
 
-func spawn_enemy(type: Global.Enemy, spawn_pos: Vector2) -> Area2D:
+func spawn_enemy(type: Global.Enemy, spawn_pos: Vector2, bypass_cost: bool = false) -> Area2D:
 	var data = Global.enemies.get(type)
-	if data and _purchase(data.cost):
+	if data and (bypass_cost or _purchase(data.cost)):
 		var enemy = data.scene.instantiate()
 		enemy.global_position = spawn_pos
 		add_child(enemy)
 		return enemy
 	return
 
-func spawn_event(type: Global.Event):
+func spawn_event(type: Global.Event, spawn_pos: Vector2, bypass_cost: bool = false) -> Node2D:
 	var data = Global.events.get(type)
-	if data and _purchase(data.cost):
-		var event = data.scene.instantiate()
-		add_child(event)
-		return event
+	if data and (bypass_cost or _purchase(data.cost)):
+			var event = data.scene.instantiate()
+			event.global_position = spawn_pos
+			add_child(event)
+			return event
+	return
 
 # Private helper to handle the money logic
 func _purchase(amount: int) -> bool:
@@ -42,13 +44,13 @@ func _on_tick_timer_timeout():
 	if randf() < 0.7: # 70% chance to spawn an enemy, 30% chance to trigger an event
 		spawn_enemy(Global.Enemy.CIRCLE_PASSIVE, _get_random_spawn_position())
 	else:
-		spawn_event(Global.Event.GOLDEN_ASTEROID)
+		spawn_event(Global.Event.GOLDEN_ASTEROID, _get_random_spawn_position())
 
 func _on_round_time_timeout():
 	# Round ended, stop spawning and maybe trigger an event or reward
 	spawntimer.stop()
 	astroidspawner.toggle_spawning() # Example: toggle asteroid spawning on round end
-	Global.boss = spawn_enemy(Global.Enemy.HENNIGMACHINE, Vector2(Global.viewend.x/2,Global.viewend.y/2)) # Spawn a final enemy as a "boss" or challenge
+	Global.boss = spawn_enemy(Global.Enemy.HENNIGMACHINE, Vector2(Global.viewend.x/2,Global.viewend.y/2), true) # Spawn a final enemy as a "boss" or challenge
 
 func _get_random_spawn_position() -> Vector2:
 	var side = randi() % 4

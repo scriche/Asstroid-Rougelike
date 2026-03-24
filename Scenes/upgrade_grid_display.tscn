@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://b51sx85jfp046"]
+
+[ext_resource type="Script" uid="uid://o7q64hrx73p0" path="res://upgrade_grid_display.gd" id="1_3k8c1"]
+[ext_resource type="Script" uid="uid://c2dvylxq6kdpy" path="res://Scenes/scroll_container.gd" id="2_aruhm"]
+
+[node name="UpgradeGridDisplay" type="Control" unique_id=1324587574]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+script = ExtResource("1_3k8c1")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1241685]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1214412651]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="HBoxContainer" unique_id=341574787]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+columns = 6
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer" unique_id=1328315528]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+script = ExtResource("2_aruhm")
+
+[node name="GridContainer" type="GridContainer" parent="HBoxContainer/ScrollContainer" unique_id=1437028310]
+layout_mode = 2
+columns = 23

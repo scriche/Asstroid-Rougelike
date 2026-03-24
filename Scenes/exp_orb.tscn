@@ -1,14 +1,28 @@
 [gd_scene format=3 uid="uid://cvfr8kpilohke"]
 
 [ext_resource type="Texture2D" uid="uid://qacqrbt4kg0o" path="res://Sprites/ExpOrb.png" id="1_or5fv"]
-[ext_resource type="Script" uid="uid://ba3bnktwwosel" path="res://exp_orb.gd" id="1_sdqly"]
+
+[sub_resource type="GDScript" id="GDScript_or5fv"]
+script/source = "extends Area2D
+
+var velocity: Vector2 = Vector2.ZERO
+
+func _ready():
+    # apply a small initial velocity in a random direction
+    velocity = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized() * 400
+
+func _physics_process(delta):
+    # lerp velocity every frame towards Global.playerpos
+    var to_player = Global.playerpos - global_position
+    velocity = velocity.lerp(to_player.normalized() * 1000, 0.1)
+    position += velocity * delta"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sdqly"]
 radius = 32.0
 
 [node name="ExpOrb" type="Area2D" unique_id=979621449 groups=["exp"]]
 collision_mask = 0
-script = ExtResource("1_sdqly")
+script = SubResource("GDScript_or5fv")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1114107380]
 scale = Vector2(0.5, 0.5)

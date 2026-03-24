@@ -4,7 +4,6 @@ extends Node
 
 func _ready():
 	load_upgrades_from_folder("res://Upgrades/")
-	load_upgrades_from_folder("res://Upgrades/StatUpgrades/")
 
 func load_upgrades_from_folder(path: String):
 	var dir = DirAccess.open(path)

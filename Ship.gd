@@ -49,18 +49,23 @@ func _physics_process(delta: float) -> void:
 		# min(abs(angle_diff), turn_amount) prevents "jittering" past the target
 		rotation += sign(angle_diff) * min(abs(angle_diff), turn_amount)
 
-	# Rotate left
+	# forward is the forwards direction
+	var forward = Vector2(cos(rotation - PI/2), sin(rotation - PI/2))
+
+	# apply thrust left
 	if Input.is_action_pressed("a"):
-		rotate(-PI / 50 * delta * Stats.getstat("turn_speed"))
-	
-	# Rotate right
+		velocity += forward.rotated(-PI/2) * Stats.getstat("acceleration")/2 * delta
+
+	# Apply thrust right
 	if Input.is_action_pressed("d"):
-		rotate(PI / 50 * delta * Stats.getstat("turn_speed"))
-		
+		velocity += forward.rotated(PI/2) * Stats.getstat("acceleration")/2 * delta
+	
 	# Apply thrust forward
 	if Input.is_action_pressed("w"):
-		var dir = Vector2(cos(rotation - PI/2), sin(rotation - PI/2))
-		velocity += dir * Stats.getstat("acceleration") * delta
+		velocity += forward * Stats.getstat("acceleration") * delta
+
+	if Input.is_action_pressed("s"):
+		velocity -= forward * Stats.getstat("acceleration")/2 * delta
 
 	if Input.is_action_pressed("space") or Input.is_action_pressed("click"):
 		if shoot_timer.is_stopped():

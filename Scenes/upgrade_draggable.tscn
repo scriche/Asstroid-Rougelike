@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://1ebtm02r6v87"]
+
+[ext_resource type="Texture2D" uid="uid://1kpuskwl26uw" path="res://Sprites/NoIcon.png" id="1_6t46k"]
+[ext_resource type="Script" uid="uid://dv2ysa1jo46d1" path="res://Scenes/upgrade_draggable.gd" id="2_fxap6"]
+
+[node name="UpgradeDraggable" type="Control" unique_id=1855394160]
+z_index = 1
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -2496.0
+offset_bottom = -1376.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_fxap6")
+
+[node name="Icon" type="TextureRect" parent="." unique_id=191441633]
+texture_filter = 1
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+pivot_offset = Vector2(32, 32)
+texture = ExtResource("1_6t46k")
+
+[node name="Tooptip" type="Label" parent="." unique_id=963580091]
+z_index = 2
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "eeeeee"
+
+[node name="ColorRect" type="ColorRect" parent="Tooptip" unique_id=1431888165]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8509804)

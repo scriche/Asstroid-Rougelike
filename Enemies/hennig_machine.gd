@@ -14,7 +14,6 @@ var current_offset: float = 0.0
 var current_target_pos: Vector2 = Vector2.ZERO
 var is_dead: bool = false
 var coincount: int = 5
-var expcount: int = 10
 
 func _ready():
 	_pick_random_target()
@@ -92,11 +91,6 @@ func damage(amount: int) -> void:
 			var c = Global.Coin.instantiate()
 			c.position = position+Vector2(randi_range(-20,20),randi_range(-20,20))
 			get_parent().add_child(c)
-		for x in range(expcount):
-			var e = Global.ExpOrb.instantiate()
-			e.position = position+Vector2(randi_range(-20,20),randi_range(-20,20))
-			get_parent().add_child(e)
-		
 
 func _pick_random_target():
 	# Use your Global view bounds to stay on screen

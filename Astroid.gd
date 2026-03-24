@@ -5,14 +5,13 @@ var offset : Vector2 = Vector2(80*scale.x, 80*scale.x)
 var health = 10
 var is_dead = false
 var coincount: int = 1
-var expcount: int = 2
 var speedmult: float = 1.0
 var is_fragment: bool = false
 var damage_amount: int = 25
 
 func _ready() -> void:
 	if not is_fragment:
-		health = 5 * Global.diff * scale.x
+		health = 8 * Global.diff * scale.x
 		var middlevec = (Global.viewend + Global.viewpos) / 2 - position
 		var randscale = randf_range(0.5 * Global.diff * scale.x, 0.7 * Global.diff * scale.x)
 		
@@ -22,7 +21,7 @@ func _ready() -> void:
 			
 		scale = Vector2(randscale, randscale) * scale
 	else:
-		health = 5 * Global.diff * scale.x
+		health = 8 * Global.diff * scale.x
 
 func _physics_process(delta: float) -> void:
 	position += Vector2(cos(rotation), sin(rotation))*delta*60/scale*Global.diff*speedmult
@@ -47,10 +46,6 @@ func break_apart() -> void:
 		var c = Global.Coin.instantiate()
 		c.position = position+Vector2(randi_range(-20,20),randi_range(-20,20))
 		get_parent().add_child(c)
-	for x in range(expcount):
-		var e = Global.ExpOrb.instantiate()
-		e.position = position+Vector2(randi_range(-20,20),randi_range(-20,20))
-		get_parent().add_child(e)
 	if scale > Vector2(0.8, 0.8):
 		var a = self.duplicate()
 		var b = self.duplicate()

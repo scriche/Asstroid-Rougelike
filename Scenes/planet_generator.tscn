@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://blrm5nifvi67u"]
-
-[ext_resource type="Script" uid="uid://bun4egitv7e3x" path="res://PlanetGenerator.gd" id="1_h8s84"]
-
-[node name="PlanetGenerator" type="Node2D" unique_id=203465444]
-script = ExtResource("1_h8s84")
