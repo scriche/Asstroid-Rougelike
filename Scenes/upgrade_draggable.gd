@@ -8,6 +8,7 @@ extends Control
 var dragging: bool = false
 var target_rotation: float = 0.0
 var start_position: Vector2 = Vector2.ZERO
+var start_rotation: float = 0.0
 var mouse_pos: Vector2 = Vector2.ZERO
 var tooltip: bool = false
 
@@ -15,7 +16,7 @@ var tooltip: bool = false
 func _ready():
 	await get_tree().process_frame # Ensure all nodes are ready before accessing properties
 	start_position = global_position
-
+	start_rotation = icon.rotation
 	# --- Fallback Texture Logic ---
 	if upgrade and upgrade.icon:
 		icon.texture = upgrade.icon
@@ -27,18 +28,15 @@ func _gui_input(event):
 	if event is InputEventMouseButton:
 		if event.is_action_pressed("click"):
 			if is_infinite:
-				print("Pool: Spawning new instance of ", upgrade.name if upgrade else "Unknown")
 				spawn_clone()
 			else:
-				print("Inventory: Started dragging ", upgrade.name if upgrade else "Unknown")
 				dragging = true
 				z_index = 100 
 
 		elif event.is_action_released("click"):
 			if dragging:
-				print("Stopped dragging. Checking for drop zone...")
 				dragging = false
-				z_index = 0
+				z_index = 1
 				check_drop_zone()
 
 	if event is InputEventMouseMotion and !dragging:
@@ -54,13 +52,17 @@ func _gui_input(event):
 		# if rotation exceeds 360 degrees, wrap it around
 		if icon.rotation >= TAU:
 			icon.rotation -= TAU
-		print(icon.rotation)
+		# rotate the upgrades dimensions 
+		var temp = upgrade.shape
+		upgrade.shape = []
+		for offset in temp:
+			upgrade.shape.append(Vector2i(-offset.y, offset.x)) # Rotate 90 degrees clockwise
 
 func spawn_clone():
-	# We use duplicate() to get an exact copy of this node's properties
 	var clone = self.duplicate()
-	clone.upgrade.instance_id = int(Time.get_unix_time_from_system()) * 1000 # Assign a new unique instance_id based on timestamp
-	
+	clone.upgrade = upgrade.duplicate(true) # deep copy resource
+	clone.upgrade.instance_id = Stats.upgrade_grid.get_next_instance_id()
+	clone.modulate = Color(randf(), randf(), randf(), 0.8) # Slightly transparent to indicate it's being dragged
 	# Configure the clone to be a "real" draggable item
 	clone.is_infinite = false
 	clone.dragging = true
@@ -79,18 +81,18 @@ func check_drop_zone():
 	if slots.size() > 0:
 		for slot in slots:
 			if slot.get_global_rect().has_point(mouse_pos):
-				print("SUCCESS: Dropped on slot: ", slot.name)
 				# Snap to slot position and rotation
-				Stats.upgrade_grid.place_upgrade(upgrade, slot.get_meta("grid_pos")) # Place the upgrade on the grid using its position metadata
-				global_position = slot.global_position
-				# Add the upgrade to the slot
-				slot.get_parent().add_child(self) # Reparent to the slot's parent (e.g., the grid)
-				return
-
-	print("FAILURE: Dropped in void. Action: ", "Delete" if !is_infinite else "Return")
-	if !is_infinite:
-		# If it's a spawned item and missed the target, remove it
-		queue_free()
+				if Stats.upgrade_grid.place_upgrade(upgrade, slot.get_meta("grid_pos")): # Place the upgrade on the grid using its position metadata
+					# move the draggable to a child of the slot
+					get_parent().remove_child(self)
+					slot.add_child(self)
+					start_position = slot.global_position # Snap to the slot's position
+					start_rotation = icon.rotation # Snap to the slot's rotation
+					target_rotation = start_rotation
+					print(target_rotation)
+					print(start_rotation)
+					return
+					
 
 func _process(_delta):
 	if dragging:
@@ -100,8 +102,10 @@ func _process(_delta):
 		icon.rotation = lerp_angle(icon.rotation, target_rotation, 0.2)
 	else:
 		# If it's the 'Source' in the infinite pool, ensure it stays at its origin
-		if is_infinite and global_position != start_position:
+		if !is_infinite and global_position != start_position:
 			global_position = lerp(global_position, start_position, 0.1)
+		if !is_infinite and icon.rotation != start_rotation:
+			icon.rotation = lerp_angle(icon.rotation, start_rotation, 0.1)
 
 	if tooltip:
 		if !get_global_rect().has_point(get_global_mouse_position()) || dragging:
@@ -110,7 +114,8 @@ func _process(_delta):
 
 func showtooltip(show: bool):
 	if show and upgrade:
-		tooltip_node.text = "%s\nPrice: %d\n%s" % [upgrade.name, upgrade.price, upgrade.description]
+		# debug set text to be all upgrade info
+		tooltip_node.text = "%s\nPrice: %d\n%s\n%d\nShape: %s" % [upgrade.name, upgrade.price, upgrade.description, upgrade.instance_id, str(upgrade.shape)]
 		tooltip_node.visible = true
 	else:
 		tooltip_node.visible = false

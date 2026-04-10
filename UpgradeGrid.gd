@@ -4,7 +4,7 @@ class_name UpgradeGrid
 signal grid_changed
 signal tile_unlocked(pos: Vector2i)
 signal upgrade_placed(upgrade: Upgrade)
-signal upgrade_removed(instance_id: int)
+signal upgrade_removed(instance_id: int, upgrade: Upgrade)
 
 # Constants for tile states
 const TILE_LOCKED = -1
@@ -49,7 +49,7 @@ func unlock_tile(pos: Vector2i) -> void:
 func can_place(upgrade: Upgrade, pos: Vector2i) -> bool:
 	for offset in upgrade.shape:
 		var target = pos + offset
-		
+
 		if not _is_in_bounds(target):
 			return false
 		
@@ -65,19 +65,23 @@ func can_place(upgrade: Upgrade, pos: Vector2i) -> bool:
 			
 	return true
 
+func get_next_instance_id() -> int:
+	var max_id = 0
+	for entry in placed_upgrades.values():
+		var upgrade: Upgrade = entry["data"]
+		if upgrade.instance_id > max_id:
+			max_id = upgrade.instance_id
+	return max_id + 1
+
 ## Places the upgrade if possible
-func place_upgrade(upgrade: Upgrade, pos: Vector2i) -> bool:
-	print("Attempting to place upgrade: ", upgrade.name, " at position: ", pos)
-	
+func place_upgrade(upgrade: Upgrade, pos: Vector2i) -> bool:	
 	# 1. Check if it can be placed (fits and tiles are unlocked)
 	if not can_place(upgrade, pos):
 		return false
-	
 	# 2. Clear old position if this is a move/rotate
 	if placed_upgrades.has(upgrade.instance_id):
 		_clear_tiles(upgrade.instance_id)
 		print("Upgrade was already placed, clearing old position.")
-	print("Upgrade can be placed, proceeding with placement.")
 	# 3. Place the upgrade by marking its occupied tiles with its unique instance_id
 	for offset in upgrade.shape:
 		var target = pos + offset
@@ -96,11 +100,21 @@ func place_upgrade(upgrade: Upgrade, pos: Vector2i) -> bool:
 func remove_upgrade(instance_id: int) -> void:
 	if not placed_upgrades.has(instance_id):
 		return
+	var removed_upgrade: Upgrade = placed_upgrades[instance_id]["data"]
 	_clear_tiles(instance_id)
 	placed_upgrades.erase(instance_id)
 	
-	upgrade_removed.emit(instance_id)
+	upgrade_removed.emit(instance_id, removed_upgrade)
 	grid_changed.emit()
+
+## Returns all currently placed upgrades.
+func get_all_upgrades() -> Array[Upgrade]:
+	var upgrades: Array[Upgrade] = []
+	for entry in placed_upgrades.values():
+		var upgrade: Upgrade = entry["data"]
+		if upgrade != null:
+			upgrades.append(upgrade)
+	return upgrades
 
 ## Returns the Upgrade resource at a specific grid coordinate
 func get_upgrade_at_tile(pos: Vector2i) -> Upgrade:
@@ -112,13 +126,11 @@ func get_upgrade_at_tile(pos: Vector2i) -> Upgrade:
 	return null
 
 func _clear_tiles(instance_id: int) -> void:
-	var entry = placed_upgrades[instance_id]
-	var pos = entry["pos"]
-	var upgrade = entry["data"]
-	for offset in upgrade.shape:
-		var target = pos + offset
-		grid[target.y][target.x] = TILE_EMPTY
-	upgrade.current_grid_pos = Vector2i(-1, -1)
+	# remove all tiles occupied by this instance_id
+	for y in range(grid_size):
+		for x in range(grid_size):
+			if grid[y][x] == instance_id:
+				grid[y][x] = TILE_EMPTY
 
 func _is_in_bounds(pos: Vector2i) -> bool:
 	return pos.x >= 0 and pos.x < grid_size and pos.y >= 0 and pos.y < grid_size

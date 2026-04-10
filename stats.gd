@@ -40,32 +40,39 @@ var _stats := {
 # 9x9 grid with all 0s except for a cross shape in the middle where the first 5 rows and columns are available for upgrades, and the rest are locked. This is just an example layout and can be changed as needed.
 var upgrade_grid : UpgradeGrid = UpgradeGrid.new()
 
-# Initial an empty array to store upgrades
-var upgrades: Array[Upgrade] = []
+func get_upgrades() -> Array[Upgrade]:
+	return upgrade_grid.get_all_upgrades()
+
+func _ready() -> void:
+	upgrade_grid.upgrade_placed.connect(_on_upgrade_placed)
+	upgrade_grid.upgrade_removed.connect(_on_upgrade_removed)
 
 func upgradepickup(upgrade: Upgrade):
-	# Add the upgrade to the player's list of upgrades
-	upgrade = upgrade.duplicate()
-	upgrade.instance_id = upgrade.get_instance_id()
-	upgrades.append(upgrade)
+	_apply_upgrade_modifiers(upgrade)
 
-	# Apply the upgrade's modifiers to the player's stats
+func _apply_upgrade_modifiers(upgrade: Upgrade) -> void:
 	for stat_name in upgrade.modifiers.keys():
-		var formula = upgrade.modifiers[stat_name]	
+		var formula = upgrade.modifiers[stat_name]
 		if !_stats.has(stat_name):
 			push_error("Stat not found: " + stat_name)
-			return -1
 
 		_stats[stat_name]["modifiers"][upgrade.instance_id] = formula
 		_stats[stat_name]["dirty"] = true
 
 func removeupgrade(upgrade: Upgrade):
-	# Remove the upgrade from the player's list of upgrades
-	upgrades.erase(upgrade)
+	_remove_upgrade_modifiers(upgrade)
 
-	# Remove the upgrade's modifiers from the player's stats
+func _remove_upgrade_modifiers(upgrade: Upgrade) -> void:
 	for stat_name in upgrade.modifiers.keys():
-		_stats[stat_name]["modifiers"].erase(upgrade.instance_id)
+		if _stats.has(stat_name):
+			_stats[stat_name]["modifiers"].erase(upgrade.instance_id)
+			_stats[stat_name]["dirty"] = true
+
+func _on_upgrade_placed(upgrade: Upgrade) -> void:
+	upgradepickup(upgrade)
+
+func _on_upgrade_removed(_instance_id: int, upgrade: Upgrade) -> void:
+	removeupgrade(upgrade)
 
 func _make_stat(base: float) -> Dictionary:
 	return {

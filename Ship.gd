@@ -22,7 +22,7 @@ func _physics_process(delta: float) -> void:
 	# Update viewport info and player position
 	viewportInfo = get_viewport().get_visible_rect()
 	Global.set("playerpos", position)
-	for upgrade in Stats.upgrades:
+	for upgrade in Stats.get_upgrades():
 		if upgrade.passive == true:
 			upgrade.passive_effect(self)
 
@@ -50,22 +50,22 @@ func _physics_process(delta: float) -> void:
 		rotation += sign(angle_diff) * min(abs(angle_diff), turn_amount)
 
 	# forward is the forwards direction
-	var forward = Vector2(cos(rotation - PI/2), sin(rotation - PI/2))
+	var _forward = Vector2(cos(rotation - PI/2), sin(rotation - PI/2))
 
 	# apply thrust left
 	if Input.is_action_pressed("a"):
-		velocity += forward.rotated(-PI/2) * Stats.getstat("acceleration")/2 * delta
+		velocity +=  _forward.rotated(-PI/2) * Stats.getstat("acceleration") * delta
 
 	# Apply thrust right
 	if Input.is_action_pressed("d"):
-		velocity += forward.rotated(PI/2) * Stats.getstat("acceleration")/2 * delta
+		velocity += _forward.rotated(PI/2) * Stats.getstat("acceleration") * delta
 	
 	# Apply thrust forward
 	if Input.is_action_pressed("w"):
-		velocity += forward * Stats.getstat("acceleration") * delta
+		velocity += _forward * Stats.getstat("acceleration") * delta
 
 	if Input.is_action_pressed("s"):
-		velocity -= forward * Stats.getstat("acceleration")/2 * delta
+		velocity -= _forward * Stats.getstat("acceleration") * delta
 
 	if Input.is_action_pressed("space") or Input.is_action_pressed("click"):
 		if shoot_timer.is_stopped():
@@ -191,6 +191,7 @@ func _on_health_regen_timer_timeout() -> void:
 	health_regen_timer.wait_time = Stats.getstat("health_regen_speed")
 	if Stats.getstat("current_health") < Stats.getstat("max_health"):
 		Stats.setstat("current_health", Stats.getstat("current_health") + 1)
+		TriggerManager.on_health_regen(self)
 		update_heathbar()
 
 func _on_shield_regen_timer_timeout() -> void:
